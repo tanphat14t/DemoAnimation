@@ -19,7 +19,7 @@ function init() {
   var material = new THREE.MeshPhongMaterial();
 
   THREE.ImageUtils.crossOrigin = "";
-  material.map = THREE.ImageUtils.loadTexture("https://github.com/tanphat14t/earthAnimation/tree/main/assets/images/earth.jpg");
+  material.map = THREE.ImageUtils.loadTexture("/assets/images/earth.jpg");
 
   mesh = new THREE.Mesh(geometry, material);
   mesh.rotation.x += 0.5;
