@@ -19,15 +19,18 @@ function init() {
   var material = new THREE.MeshPhongMaterial();
 
   THREE.ImageUtils.crossOrigin = "";
-  material.map = THREE.ImageUtils.loadTexture("/assets/images/earth.jpg");
+  material.map = THREE.ImageUtils.loadTexture("/assets/images/earth.jpg"); //access on local
+  // material.map = THREE.ImageUtils.loadTexture("earthAnimation//assets/images/earth.jpg"); //access on git
 
   mesh = new THREE.Mesh(geometry, material);
   mesh.rotation.x += 0.5;
   scene.add(mesh);
 
-  var light1 = new THREE.AmbientLight(0xffffff);
-  light1.position.set(100, 50, 100);
-  scene.add(light1);
+  const light = new THREE.DirectionalLight(0xffffff, 1); 
+  light.position.set(0, 60, 40); 
+  light.target.position.set(0, 0, 0); 
+  scene.add(light);
+  scene.add(light.target);
 }
 
 function resize() {
