@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>three.js webgpu - earth</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="./assets/css/example.css">
+</head>
+
+<body>
+    <canvas class="webgl-vortex | fixed fill z-negative"></canvas>
+    <main class="scroll-container">
+        <div class="main-container">
+            <div class="landing section user-select-none | js-home-landing" style="opacity: 1; visibility: inherit;">
+                <div class="section__inner | js-home-landing:inner">
+                    <div class="absolute center-xy d-flex flex-column items-center">
+                        <h1 style="text-align: center">
+                            认识我们的合 </br>
+                            作伙伴</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        var globalData = {
+            "publicUrl": "http:\/\/localhost\/layout\/wp-content\/themes\/layout-demo\/assets\/",
+            "assetsUrl": "http:\/\/localhost\/layout\/wp-content\/themes\/layout-demo\/resources\/assets\/",
+            "vortexImages": ["http:\/\/localhost\/layout\/wp-content\/uploads\/2023\/05\/a.png", "http:\/\/localhost\/layout\/wp-content\/uploads\/2023\/05\/b.png", "http:\/\/localhost\/layout\/wp-content\/uploads\/2023\/05\/c.png", "http:\/\/localhost\/layout\/wp-content\/uploads\/2023\/05\/d.png", "http:\/\/localhost\/layout\/wp-content\/uploads\/2023\/05\/e.png", "http:\/\/localhost\/layout\/wp-content\/uploads\/2023\/05\/f.png", "http:\/\/localhost\/layout\/wp-content\/uploads\/2023\/05\/a.png", "http:\/\/localhost\/layout\/wp-content\/uploads\/2023\/05\/b.png", "http:\/\/localhost\/layout\/wp-content\/uploads\/2023\/05\/c.png", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex23-267x400.jpeg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex11-267x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex12-320x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex20-267x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex31-267x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex32-321x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex33-267x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex38-400x267.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex34-267x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex35-320x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex28-286x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex27-326x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex29-329x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex7-320x400.jpg"]
+            // "vortexImages": ["http:\/\/localhost\/layout\/wp-content\/uploads\/2023\/05\/a.png","http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex15-330x400.png","http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex15-330x400.png", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex36-400x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex25-400x366.jpeg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex37-320x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex26-267x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex23-267x400.jpeg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex11-267x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex12-320x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex20-267x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex31-267x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex32-321x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex33-267x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex38-400x267.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex34-267x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex35-320x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex28-286x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex27-326x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex29-329x400.jpg", "http:\/\/localhost\/layout\/wp-content\/uploads\/images\/vortex7-320x400.jpg"]
+
+        };
+    </script>
+    <script type="importmap">
+            {
+              "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.webgpu.js",
+                "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.webgpu.js",
+                "three/tsl": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.tsl.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.171.0/examples/jsm/"
+              }
+            }
+            </script>
+    <script type="module">
+
+        import * as THREE from 'three';
+        import { step, normalWorld, output, texture, vec3, vec4, normalize, positionWorld, bumpMap, cameraPosition, color, uniform, mix, uv, max } from 'three/tsl';
+
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+        class XR {
+            constructor() {
+                q(this, "beforeRender", (e) => {
+                    (this.clockDelta = this.clock.getDelta()),
+                        (this.globalUniforms.uDelta.value =
+                            this.clockDelta > 0.016 ? 0.016 : this.clockDelta),
+                        (this.globalUniforms.uTime.value = e),
+                        this.renderer.info.reset();
+                });
+                q(this, "render", (e) => {
+                    E.Gui && E.Gui.refresh(!1),
+                        (this.clockDelta = Math.round(this.clock.getDelta() * 1e3) / 1e3),
+                        (this.clockDelta = Bo.clamp(this.clockDelta, 0, 0.016)),
+                        (this.normalizeDelta = this.clockDelta / 0.016),
+                        (this.globalUniforms.uDelta.value = this.clockDelta),
+                        (this.globalUniforms.uTime.value = e);
+                });
+                q(this, "onResize", () => {
+                    this.renderer.setSize(E.window.w, E.window.h);
+                });
+                (this.canvas = {
+                    vortex: at(".webgl-vortex"),
+                }),
+                    (this.renderer = new Mm({
+                        alpha: !0,
+                        antialias: !0,
+                        canvas: this.canvas.vortex,
+                        powerPreference: "high-performance",
+                        stencil: !1,
+                    })),
+                    this.renderer.setPixelRatio(E.window.dpr >= 2 ? 2 : E.window.dpr),
+                    this.renderer.setSize(E.window.w, E.window.h),
+                    (this.renderer.info.autoReset = !1),
+                    this.renderer.setClearColor(0, 0),
+                    (this.clock = new TD()),
+                    (this.clockDelta = 0),
+                    (this.normalizeDelta = 0),
+                    (this.globalUniforms = {
+                        uDelta: {
+                            value: 0,
+                        },
+                        uTime: {
+                            value: 0,
+                        },
+                        uResolution: {
+                            value: new Ue(
+                                E.window.w * this.renderer.getPixelRatio(),
+                                E.window.h * this.renderer.getPixelRatio()
+                            ),
+                        },
+                    }),
+                    (this.scenes = {
+                        vortex: null,
+                    }),
+                    dL();
+            }
+            start() {
+                this.addEvents();
+            }
+            stop() {
+                this.removeEvents();
+            }
+            addEvents() {
+                De.on(Ze.RESIZE, this.onResize), E.RAFCollection.add(this.render, 100);
+            }
+            removeEvents() {
+                De.off(Ze.RESIZE, this.onResize), E.RAFCollection.remove(this.render);
+            }
+            generateTexture(e, t = {}) {
+                return (
+                    e instanceof HTMLImageElement && (e = new xi(e)),
+                    (e.minFilter = t.minFilter || mr),
+                    (e.magFilter = t.magFilter || Ui),
+                    (e.wrapS = e.wrapT = t.wrapping || bn),
+                    (e.flipY = t.flipY !== void 0 ? t.flipY : !0),
+                    (e.encoding = t.encoding || gr),
+                    this.renderer.initTexture(e),
+                    e
+                );
+            }
+        }
+        function TA() {
+            Array.from(document.styleSheets)
+                .filter(
+                    (r) =>
+                        r.href === null ||
+                        r.href.startsWith(window.location.origin) ||
+                        r.href.startsWith("http://127.0.0.1") ||
+                        r.href.startsWith("https://www.cosmos.so") ||
+                        r.href.startsWith("https://cosmos.so") ||
+                        r.href.startsWith("https://landing.cosmos.so") ||
+                        r.href.startsWith("https://cosmos.unseen") ||
+                        r.href.startsWith("http://192.168")
+                )
+                .reduce(
+                    (r, e) =>
+                    (r = [
+                        ...r,
+                        ...Array.from(e.cssRules).reduce(
+                            (t, i) =>
+                            (t =
+                                i.selectorText === ":root"
+                                    ? [
+                                        ...t,
+                                        ...Array.from(i.style).filter((n) =>
+                                            n.startsWith("--bp-")
+                                        ),
+                                    ]
+                                    : t),
+                            []
+                        ),
+                    ]),
+                    []
+                )
+                .forEach((r) => {
+                    E.mq[r.replace("--bp-", "")] = window.matchMedia(
+                        getComputedStyle(document.documentElement).getPropertyValue(r)
+                    );
+                }),
+                (E.staticComponents = new Bv()),
+                (E.components = new Bv()),
+                (E.urlParams = new URLSearchParams(window.location.search)),
+                Object.assign(E, {
+                    ...window.globalData,
+                });
+        }
+        class mL extends og {
+            constructor() {
+                super();
+                q(this, "enableDarkMode", () => {
+                    this.trails.forEach((t, i) => {
+                        t.planes.forEach((n, s) => {
+                            K.to(n.material.uniforms.uModeProgress, {
+                                value: 1,
+                                duration: 0.2,
+                            });
+                        });
+                    });
+                });
+                q(this, "disableDarkMode", () => {
+                    this.trails.forEach((t, i) => {
+                        t.planes.forEach((n, s) => {
+                            K.to(n.material.uniforms.uModeProgress, {
+                                value: 0,
+                                duration: 0.2,
+                            });
+                        });
+                    });
+                });
+                q(this, "onPointerDown", () => {
+                    (this.mouseDown = !0),
+                        (this.startPoint.x = E.pointer.x),
+                        (this.startPoint.y = E.pointer.y),
+                        (this.topHalf = -1),
+                        this.startPoint.y < E.window.h * 0.5 && (this.topHalf = 1);
+                });
+                q(this, "onPointerUp", () => {
+                    (this.startPoint.x = 0), (this.startPoint.y = 0), (this.mouseDown = !1);
+                });
+                q(this, "touchDrag", (t, i) => {
+                    this.mouseArgs = i;
+                });
+                q(this, "onRaf", () => {
+                    if (!this.pausedRaf) {
+                        if (
+                            (this.controls.enabled && this.controls.update(),
+                                this.camera.position.set(0, 0, this.options.cameraZPos),
+                                this.camera.lookAt(this.cameraLookAt),
+                                this.smoothMouse[0].lerp(E.pointer.glNormalized, 0.02),
+                                this.smoothMouse[1].lerp(E.pointer.glNormalized, 0.02),
+                                this.mouseDown && this.mouseArgs)
+                        ) {
+                            (this.x = E.pointer.x - this.startPoint.x),
+                                (this.y = E.pointer.y - this.startPoint.y),
+                                (this.prevTime = this.currentTime),
+                                (this.currentTime = new Date().getTime()),
+                                (this.deltaTime = this.currentTime - this.prevTime),
+                                (this.distance = Math.sqrt(this.x * this.x + this.y * this.y));
+                            const t = ((this.distance * 2) / this.deltaTime) * 2;
+                            (this.tweenParams.mouseSpeedMultiplier =
+                                Math.abs(this.distance) * t * 1e-7),
+                                (this.tweenParams.mouseSpeedMultiplier = K.utils.clamp(
+                                    0,
+                                    0.01,
+                                    this.tweenParams.mouseSpeedMultiplier
+                                ));
+                        } else
+                            (this.tweenParams.mouseSpeedMultiplier = this.lerp(
+                                this.tweenParams.mouseSpeedMultiplier,
+                                0,
+                                0.05
+                            )),
+                                (this.options.cameraMultiplier = this.lerp(
+                                    this.options.cameraMultiplier,
+                                    0,
+                                    0.05
+                                ));
+                        (this.options.cameraMultiplier +=
+                            this.tweenParams.mouseSpeedMultiplier *
+                            0.09 *
+                            E.WebGL.normalizeDelta),
+                            this.updateCamera();
+                        for (let t = 0; t < 10; t++) {
+                            this.vortexPlaying &&
+                                this.progress[t] < 0.05 &&
+                                ((this.trails[0].planes[t].visible = !0),
+                                    (this.trails[1].planes[t].visible = !0),
+                                    (this.trails[2].planes[t].visible = !0),
+                                    (this.trails[3].planes[t].visible = !0),
+                                    (this.trails[4].planes[t].visible = !0),
+                                    (this.trails[5].planes[t].visible = !0)),
+                                (this.progress[t] += 0.0018 * E.WebGL.normalizeDelta),
+                                (this.progress[t] +=
+                                    this.tweenParams.speedMultiplier * E.WebGL.normalizeDelta),
+                                (this.progress[t] +=
+                                    this.tweenParams.mouseSpeedMultiplier * E.WebGL.normalizeDelta),
+                                this.loopVortex
+                                    ? (this.progress[t] = this.progressWrap(this.progress[t]))
+                                    : (this.progress[t] = K.utils.clamp(0, 1, this.progress[t]));
+                            const i = Math.pow(this.progress[t], 1.7);
+                            this.curve.getPointAt(i, this.positions[t]),
+                                this.scaleEase.getPointAt(i, this.scaleProgress[t]),
+                                this.opacityEase.getPointAt(
+                                    this.progress[t],
+                                    this.opacityProgress[t]
+                                ),
+                                this.rotationEase.getPointAt(
+                                    this.progress[t],
+                                    this.rotationProgress[t]
+                                ),
+                                this.trails.forEach((n, s) => {
+                                    (n.planes[t].material.uniforms.uTrailPosition.value =
+                                        this.positions[t]),
+                                        (n.planes[t].material.uniforms.uScale.value =
+                                            this.scaleProgress[t].y),
+                                        (n.planes[t].material.uniforms.uTransparency.value =
+                                            this.opacityProgress[t].y *
+                                            this.tweenParams.opacityMultiplier),
+                                        (n.planes[t].material.uniforms.uRotation.value =
+                                            this.rotationProgress[t].y + this.rotationOffsets[s]);
+                                });
+                        }
+                        this.vortexGroup.scale.set(
+                            this.tweenParams.groupScale,
+                            this.tweenParams.groupScale,
+                            this.tweenParams.groupScale
+                        ),
+                            this.options.controls
+                                ? E.WebGL.renderer.render(this, this.devCamera)
+                                : E.WebGL.renderer.render(this, this.camera);
+                    }
+                });
+                q(this, "onResize", () => {
+                    (this.camera.aspect = E.window.w / E.window.h),
+                        this.camera.updateProjectionMatrix(),
+                        (this.devCamera.aspect = E.window.w / E.window.h),
+                        this.devCamera.updateProjectionMatrix();
+                });
+                (this.origOptions = {
+                    ...this.options,
+                }),
+                    (this.mouseDown = !1),
+                    (this.options.resposive = {
+                        cameraPositions: {
+                            sm: 7,
+                            md: 8,
+                            lg: 10,
+                        },
+                    }),
+                    (this.startPoint = {
+                        x: 0,
+                        y: 0,
+                    }),
+                    (this.options.cameraZOffset = this.options.resposive.cameraPositions.sm),
+                    (this.options.cameraZPos = this.options.resposive.cameraPositions.sm),
+                    (this.trailCurve = new pL()),
+                    (this.curve = this.trailCurve.curve),
+                    this.createEasings(),
+                    (this.positions = []),
+                    (this.progress = []),
+                    (this.positionProgress = []),
+                    (this.scaleProgress = []),
+                    (this.opacityProgress = []),
+                    (this.rotationProgress = []),
+                    (this.progressWrap = K.utils.wrap(0, 1)),
+                    (this.components = {
+                        imageTrail1: new za(0, 0),
+                        imageTrail2: new za(1, 0),
+                        imageTrail3: new za(0, 4),
+                        imageTrail4: new za(1, 4),
+                        imageTrail5: new za(0, 7),
+                        imageTrail6: new za(1, 7),
+                    }),
+                    (this.pausedRaf = !1),
+                    (this.loopVortex = !0),
+                    (this.vortexPlaying = !1),
+                    this.load(),
+                    (this.currentTime = new Date().getTime());
+            }
+            start() {
+                (this.pausedRaf = !1),
+                    (this.loopVortex = !0),
+                    K.timeline()
+                        .set(E.WebGL.canvas.vortex, {
+                            autoAlpha: 1,
+                        })
+                        .to(
+                            E.WebGL.scenes.vortex.tweenParams,
+                            {
+                                speedMultiplier: 0,
+                                opacityMultiplier: 1,
+                                groupScale: 1,
+                                duration: 2,
+                                ease: "power1.inOut",
+                            },
+                            0.05
+                        ),
+                    this.addEvents();
+            }
+            stop() {
+                K.to(E.WebGL.canvas.vortex, {
+                    autoAlpha: 0,
+                }),
+                    this.setupPositions(),
+                    this.removeEvents();
+            }
+            startVortex() {
+                (this.vortexPlaying = !0), this.buildIntro();
+            }
+            createEasings() {
+                (this.scaleEase = new Tb(
+                    [
+                        new Z(0, 1, 0),
+                        new Z(0.5, 0.95, 0),
+                        new Z(0.999999, 0.6, 0),
+                        new Z(1, 0, 0),
+                    ],
+                    !1,
+                    "catmullrom",
+                    0.1
+                )),
+                    (this.opacityEase = new nD(
+                        new Ue(0, 0),
+                        new Ue(0.01, 0.2),
+                        new Ue(0.8, 0.99),
+                        new Ue(1, 1)
+                    )),
+                    (this.rotationEase = new sD([new Ue(0, -0.1), new Ue(1, 0.7)]));
+            }
+            build() {
+                for (const i in this.components)
+                    this.components[i].build(this.objectData), this.add(this.components[i]);
+                this.setupPositions(),
+                    (this.trails = [
+                        this.components.imageTrail1,
+                        this.components.imageTrail2,
+                        this.components.imageTrail3,
+                        this.components.imageTrail4,
+                        this.components.imageTrail5,
+                        this.components.imageTrail6,
+                    ]),
+                    (this.vortexGroup = new ts()),
+                    this.add(this.vortexGroup);
+                const t = [0, -60, -120, -180, -240, -300];
+                (this.rotationOffsets = [0, 0, 0, 90, 180, -90]),
+                    this.trails.forEach((i, n) => {
+                        (i.rotation.z = Bo.degToRad(t[n])), this.vortexGroup.add(i);
+                    });
+            }
+            buildIntro() {
+                return K.timeline().to(this.tweenParams, {
+                    speedMultiplier: 0,
+                    opacityMultiplier: 1,
+                    groupScale: 1,
+                    duration: 2,
+                    ease: "power1.inOut",
+                });
+            }
+            setupPositions() {
+                (this.tweenParams = {
+                    speedMultiplier: 0.0018 * 15,
+                    opacityMultiplier: 0.3,
+                    groupScale: 0.7,
+                    mouseSpeedMultiplier: 0,
+                }),
+                    (this.progress = []),
+                    (this.positions = []),
+                    (this.positionProgress = []),
+                    (this.scaleProgress = []),
+                    (this.opacityProgress = []),
+                    (this.rotationProgress = []);
+                for (let t = 0; t < 10; t++)
+                    this.progress.push(t * 0.1),
+                        this.positions.push(new Z()),
+                        this.positionProgress.push(new Ue()),
+                        this.scaleProgress.push(new Ue()),
+                        this.opacityProgress.push(new Ue()),
+                        this.rotationProgress.push(new Ue());
+            }
+            addEvents() {
+                De.on(Ze.RESIZE, this.onResize),
+                    De.on("DarkMode:enabled", this.enableDarkMode),
+                    De.on("DarkMode:disabled", this.disableDarkMode),
+                    E.RAFCollection.add(this.onRaf, 1),
+                    this.startVortex(),
+                    De.on(Ze.POINTERDOWN, this.onPointerDown),
+                    De.on(Ze.POINTERUP, this.onPointerUp),
+                    De.on(Ze.MOUSEDRAG, this.touchDrag);
+            }
+            startRaf() {
+                E.RAFCollection.add(this.onRaf, 1);
+            }
+            removeEvents() {
+                De.off(Ze.RESIZE, this.onResize),
+                    De.off("DarkMode:enabled", this.enableDarkMode),
+                    De.off("DarkMode:disabled", this.disableDarkMode),
+                    E.RAFCollection.remove(this.onRaf),
+                    (this.vortexPlaying = !1),
+                    De.off(Ze.POINTERDOWN, this.onPointerDown),
+                    De.off(Ze.POINTERUP, this.onPointerUp),
+                    De.off(Ze.MOUSEDRAG, this.touchDrag);
+            }
+            lerp(t, i, n) {
+                return (1 - n) * t + n * i;
+            }
+            stopRaf() {
+                E.RAFCollection.remove(this.onRaf);
+            }
+            load() {
+                this.assets = {
+                    textures: {},
+                    models: {},
+                };
+                for (let t = 0; t < 20; t++)
+                    E.AssetLoader.loadTexture(window.globalData.vortexImages[t]).then((i) => {
+                        (this.assets.textures[`image${t}`] = i),
+                            (this.assets.textures[`image${t}`].width = i.image.width),
+                            (this.assets.textures[`image${t}`].height = i.image.height);
+                    });
+            }
+            destroy() {
+                this.stop();
+                for (const t in this.components)
+                    this.components[t].destroy && this.components[t].destroy();
+                Object.assign(this.options, this.origOptions);
+            }
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+        integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+        integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+
+</html>

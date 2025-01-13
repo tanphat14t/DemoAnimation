@@ -1,15 +1,13 @@
-const height = document.querySelector("#sOne").offsetHeight;
+// const height = document.querySelector("#sOne").offsetHeight;
 
-
-gsap.registerPlugin(ScrollTrigger);
-
+// gsap.registerPlugin(ScrollTrigger);
 
 // gsap.to("#sOne", {
 //   scrollTrigger: {
-//     pin: "#sOne", 
-//     end: `+=${height}px`, 
-//     markers: true, 
-//     pinSpacing: true, 
+//     pin: "#sOne",
+//     end: `+=${height}px`,
+//     markers: true,
+//     pinSpacing: true,
 //   },
 // });
 // gsap
@@ -29,3 +27,13 @@ gsap.registerPlugin(ScrollTrigger);
 //     opacity: 1,
 //     visibility: "visible",
 //   });
+console.log("running....");
+
+
+
+// requestAnimationFrame(raf);
+const locoScroll = new LocomotiveScroll({
+  el: document.querySelector("main"),
+  smooth: true,
+  lerp: 0.03,
+});

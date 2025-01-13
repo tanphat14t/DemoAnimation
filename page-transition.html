@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .loading {
+        position: fixed;
+        inset: 0;
+        background-color: red;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 80px;
+        line-height: 90px;
+        color: blue;
+        z-index: 1000;
+        transition: all 0.4s;
+    }
+
+    .loading.hidden {
+        opacity: 0;
+        z-index: -1;
+        visibility: hidden;
+    }
+
+    nav {
+        height: auto;
+        width: 100%;
+        background: #E57E7F;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex !important;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-around;
+        padding: 0;
+        margin: 0;
+        text-align: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .navbar {
+        text-align: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-transition: all 0.5s;
+        transition: all 0.5s;
+    }
+
+    .nav-menu li {
+        list-style: none;
+        padding: 0;
+    }
+
+    .nav-menu {
+        width: 100%;
+        height: 100%;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        margin: 0 auto;
+        text-align: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -ms-flex-pack: distribute;
+        justify-content: space-around;
+    }
+
+    a.nav-link {
+        color: white;
+        text-decoration: none;
+        font-size: 1.5rem;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+    }
+
+    a.nav-link:hover {
+        color: #7851A9;
+        transition: 0.5s ease;
+    }
+
+    a.nav-link::before {
+        width: 500%;
+    }
+
+    a.nav-link::after {
+        width: 500%;
+    }
+</style>
+
+<body>
+    <div class="loading">Loading ....</div>
+    <nav>
+        <img src="https://avatars.githubusercontent.com/u/88958992?s=400&u=b23ca2c53fbf48418280292b91928b8cf9795a75&v=4"
+            alt="logo" width="10%">
+        <div class="navbar">
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="./page-transition1.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="./page-transition2.html" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="./page-transition3.html" class="nav-link">Services</a></li>
+            </ul>
+        </div>
+    </nav>
+</body>
+<script>
+    const transition = document.querySelector('.loading');
+    const links = document.querySelectorAll('a'); // NodeList chứa tất cả các thẻ <a>
+
+    window.addEventListener("load", () => {
+        transition.classList.remove('hidden');
+        setTimeout(() => {
+            transition.classList.add('hidden');
+        }, 1500);
+    });
+
+    // Sử dụng forEach để thêm sự kiện click cho từng liên kết
+    links.forEach((link) => {
+        link.addEventListener("click", (e) => {
+            e.preventDefault(); // Ngăn điều hướng mặc định
+
+            let currentURL = link.getAttribute('href'); // Lấy href của liên kết
+            console.log('click');
+            console.log(currentURL);
+
+            transition.classList.remove('hidden');
+            setTimeout(() => {
+                window.location.href = currentURL; // Điều hướng đến liên kết sau một khoảng thời gian
+            }, 1000); // Điều chỉnh thời gian theo ý muốn
+        });
+    });
+
+</script>
+
+</html>

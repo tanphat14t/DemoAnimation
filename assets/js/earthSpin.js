@@ -26,9 +26,9 @@ function init() {
   mesh.rotation.x += 0.5;
   scene.add(mesh);
 
-  const light = new THREE.DirectionalLight(0xffffff, 1); 
-  light.position.set(0, 60, 40); 
-  light.target.position.set(0, 0, 0); 
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(0, 60, 40);
+  light.target.position.set(0, 0, 0);
   scene.add(light);
   scene.add(light.target);
 }

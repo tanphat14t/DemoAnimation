@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mouse Move Animation</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0;
+        }
+
+        .container {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .container img {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            transition: transform 0.2s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://via.placeholder.com/100" alt="Image 1">
+        <img src="https://via.placeholder.com/100" alt="Image 2">
+        <img src="https://via.placeholder.com/100" alt="Image 3">
+        <img src="https://via.placeholder.com/100" alt="Image 4">
+        <img src="https://via.placeholder.com/100" alt="Image 5">
+    </div>
+
+    <script>
+        const container = document.querySelector(".container");
+        const images = document.querySelectorAll(".container img");
+
+        container.addEventListener("mousemove", (e) => {
+            const { clientX, clientY } = e;
+            const { left, top, width, height } = container.getBoundingClientRect();
+
+            // Tính vị trí chuột tương đối với container
+            const xPercent = (clientX - left) / width - 0.5;
+            const yPercent = (clientY - top) / height - 0.5;
+
+            images.forEach((image, index) => {
+                const depth = (index + 1) * 5; // Tăng độ dịch chuyển theo từng ảnh
+                const translateX = xPercent * depth;
+                const translateY = yPercent * depth;
+
+                image.style.transform = `translate(${translateX}px, ${translateY}px)`;
+            });
+        });
+
+        // Reset vị trí khi chuột rời khỏi container
+        container.addEventListener("mouseleave", () => {
+            images.forEach((image) => {
+                image.style.transform = "translate(0, 0)";
+            });
+        });
+    </script>
+</body>
+</html>
