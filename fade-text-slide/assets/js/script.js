@@ -2,7 +2,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 let sections = gsap.utils.toArray(".carousel-track .carousel-slide");
 let tl = gsap.timeline({
-  
   scrollTrigger: {
     markers: true,
     trigger: "#carousel",
@@ -24,20 +23,11 @@ gsap.to(sections, {
     end: () => "+=" + document.querySelector("#carousel").offsetWidth,
   },
 });
-tl.to(".box-text .photon", {
+tl.to(".box-text .photon, .text-photon", {
   opacity: 0,
-//   delay: 600,
-})
-  .to(".text-photon", {
-    opacity: 0,
-    // delay: 600,
-  })
-  .from(".box-text .ray2", {
-    opacity: 0,
-  })
-  .from(".text-ray", {
-    opacity: 0,
-  });
+}).from(".box-text .ray2, .text-ray", {
+  opacity: 0,
+});
 //   .to(".box-text .ray2", {
 //     opacity: 0,
 //     delay: 600,
