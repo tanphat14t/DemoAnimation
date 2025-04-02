@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Hover Sphere</title>
+</head>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #111;
+    }
+
+    canvas {
+        display: block;
+    }
+</style>
+
+
+<body>
+    <script src="https://cdn.skypack.dev/three@0.150.1"></script>
+    <script src="https://cdn.skypack.dev/three@0.150.1/examples/jsm/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+        integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <script>
+
+        // Tạo Scene, Camera, Renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.z = 3;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Điều khiển chuột
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        // Tạo hình cầu
+        const geometry = new THREE.SphereGeometry(1, 128, 128);
+
+        // Vertex Shader (hiệu ứng gợn sóng khi hover)
+        const vertexShader = `
+            precision mediump float;
+            varying vec2 vUv;
+            varying vec3 vPosition;
+            uniform float uTime;
+            uniform vec2 uMouse;
+
+            void main() {
+                vUv = uv;
+                vPosition = position;
+
+                float dist = distance(uv, uMouse);
+                float wave = sin(uTime * 3.0 - dist * 20.0) * 0.08 * exp(-dist * 6.0);
+
+                vec3 newPosition = position + normal * wave;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+            }
+        `;
+
+        // Fragment Shader (màu sắc có chuyển động nhẹ)
+        const fragmentShader = `
+            precision mediump float;
+            varying vec2 vUv;
+            uniform float uTime;
+
+            void main() {
+                vec3 baseColor = vec3(0.2, 0.6, 1.0);
+                vec3 waveColor = vec3(1.0, 0.2, 0.6);
+                float pulse = 0.5 + 0.5 * sin(uTime * 2.0);
+                vec3 color = mix(baseColor, waveColor, pulse);
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `;
+
+        // Uniforms
+        const uniforms = {
+            uTime: { value: 0 },
+            uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+        };
+
+        const material = new THREE.ShaderMaterial({
+            vertexShader,
+            fragmentShader,
+            uniforms,
+        });
+
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        // Cập nhật vị trí chuột
+        window.addEventListener("mousemove", (event) => {
+            const x = event.clientX / window.innerWidth;
+            const y = 1 - event.clientY / window.innerHeight;
+            gsap.to(uniforms.uMouse.value, { x, y, duration: 0.3 });
+        });
+
+        // Vòng lặp animation
+        const clock = new THREE.Clock();
+        function animate() {
+            uniforms.uTime.value = clock.getElapsedTime();
+            controls.update();
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Xử lý thay đổi kích thước màn hình
+        window.addEventListener("resize", () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
+</body>
+
+</html>

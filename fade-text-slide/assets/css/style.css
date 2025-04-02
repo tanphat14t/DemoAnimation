@@ -1,0 +1,95 @@
+#section-first,
+#section-last {
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(165.72deg, #f7bdf8 21.15%, #cd237f 81.93%), url(https://assets.codepen.io/16327/noise.png);
+  background-blend-mode: color-dodge;
+}
+
+#carousel {
+  height: 100vh;
+  background: black;
+  background-blend-mode: color-dodge;
+  position: relative;
+}
+#carousel .wrap-text {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 50px;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  z-index: 11;
+}
+#carousel .wrap-text .box-text {
+  grid-column-end: 4;
+  grid-column-start: 1;
+  grid-row-start: 2;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  gap: clamp(1.5rem, 2vmax, 2vw);
+  position: relative;
+}
+#carousel .wrap-text .box-text .text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+#carousel .wrap-text .box-text .text p {
+  font-size: clamp(0.9rem, 1.08vmax, 1.08vw);
+  color: hsla(0, 0%, 100%, 0.6);
+  line-height: 115%;
+}
+#carousel .wrap-text .box-text .text p span {
+  color: white;
+}
+#carousel .wrap-text .box-right-text {
+  grid-column-start: 10;
+  position: relative;
+}
+#carousel .wrap-text .box-right-text .text {
+  font-size: 90px;
+  line-height: 110%;
+  color: white;
+  font-weight: 700;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#carousel .wrap-text .default-text {
+  font-size: 90px;
+  grid-row-start: 3;
+}
+#carousel .carousel-list {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+#carousel .carousel-list .carousel-track {
+  display: flex;
+  flex-wrap: nowrap;
+  padding-top: 8vmax;
+  padding-bottom: 8vmax;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 50%;
+  cursor: grab;
+}
+#carousel .carousel-list .carousel-track .carousel-slide {
+  width: max-content;
+  height: auto;
+  border-radius: 12px;
+  overflow: hidden;
+}
+#carousel .carousel-list .carousel-track .carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*# sourceMappingURL=style.css.map */

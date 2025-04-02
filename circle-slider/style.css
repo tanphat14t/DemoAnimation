@@ -1,0 +1,158 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+}
+body.hidden {
+  overflow: hidden;
+}
+
+.blank-section {
+  height: 100vh;
+  background: #000;
+  overflow: hidden;
+}
+
+.date-timeline-section {
+  padding: 100px 0;
+  min-height: 100vh;
+  will-change: transform;
+}
+@media only screen and (max-width: 1400px) {
+  .date-timeline-section {
+    padding: 80px 0;
+  }
+}
+
+.rows {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+@media only screen and (max-width: 767px) {
+  .rows {
+    flex-wrap: wrap;
+  }
+}
+
+.circle {
+  width: 600px;
+  height: 600px;
+  background: transparent;
+  border-radius: 50%;
+  color: #fff;
+  position: relative;
+  border: 2px solid #d6aef1;
+  left: -210px;
+  will-change: transform;
+}
+
+@media only screen and (max-width: 1400px) {
+  .circle {
+    width: 540px;
+    height: 540px;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .circle {
+    width: 300px;
+    height: 300px;
+    left: -110px;
+  }
+}
+.date-list-row,
+.dots-list-row {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.dots {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  background: #d6aef1;
+  border-radius: 50%;
+  display: inline-block;
+  transition: ease 0.4s;
+  will-change: transform;
+}
+@media only screen and (max-width: 767px) {
+  .dots {
+    width: 12px;
+    height: 12px;
+  }
+}
+.dots.active {
+  background-color: #9720e5;
+}
+
+.date-list {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: #330662;
+}
+.date-list .inner-text {
+  position: relative;
+  display: inline-flex;
+  gap: 10px;
+}
+.date-list .inner-text span {
+  display: inline-block;
+}
+.date-list .inner-text .date-text {
+  font-weight: 900;
+  transition: ease 0.4s;
+  color: #d6aef1;
+  will-change: transform;
+  transform-origin: center;
+}
+@media only screen and (max-width: 767px) {
+  .date-list .inner-text .date-text {
+    font-size: 12px;
+  }
+}
+.date-list .inner-text .text {
+  width: 100px;
+  word-break: break-word;
+  position: absolute;
+  left: 80px;
+  opacity: 0;
+  transition: ease 0.4s;
+  color: #330662;
+}
+.date-list.active .date-text {
+  color: #9720e5;
+  margin-left: 63px;
+  transform: scale(2.4);
+}
+@media only screen and (max-width: 767px) {
+  .date-list.active .date-text {
+    transform: scale(1.8);
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .text-list {
+    width: 100%;
+    padding: 0 30px;
+    text-align: right;
+    margin-top: -140px;
+  }
+}
+.text-list .out-text {
+  margin-left: -60px;
+  max-width: 400px;
+  display: none;
+}
+.text-list .out-text.active {
+  display: block;
+}
